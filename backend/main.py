@@ -1,23 +1,21 @@
 """
 FastAPI-сервер для CineLib.
-Запуск: python3 -m uvicorn main:app --reload
+Запуск: uvicorn main:app --reload
 """
+
 import os
-from fastapi.staticfiles import StaticFiles
-from pathlib import Path
-from dotenv import load_dotenv
-from fastapi.responses import FileResponse
-
-# Загружаем переменные из .env (работает локально, в Docker — тоже)
-load_dotenv()
-
 import uuid
-from datetime import datetime, timezone, timedelta
-from fastapi import FastAPI, HTTPException, Depends, Header
+from pathlib import Path
+from datetime import datetime, timezone
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from pathlib import Path
+
+load_dotenv()
+
 from database import get_connection
 from auth import hash_password, verify_password, create_access_token, decode_token
 from models import (
@@ -28,8 +26,10 @@ from models import (
 
 app = FastAPI(title="CineLib API", version="1.0")
 
-cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:5500,http://127.0.0.1:5500").split(",")
+security = HTTPBearer()
 
+# CORS
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:5500,http://127.0.0.1:5500,http://127.0.0.1:8000").split(",")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
@@ -38,22 +38,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Схема безопасности для Swagger (появится кнопка Authorize 🔒)
-security = HTTPBearer()
-
-# Путь к favicon (в той же папке, что и main.py)
-FAVICON_PATH = Path(__file__).parent / "favicon.svg"
+# Статика
+BASE_DIR = Path(__file__).parent
+STATIC_DIR = BASE_DIR / "static"
+if STATIC_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 
 # ============================================================
-# Вспомогательная функция: получить текущего пользователя
+# Авторизация
 # ============================================================
 
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
-    """
-    Читает заголовок Authorization: Bearer <token>
-    и возвращает данные пользователя.
-    """
     token = credentials.credentials
     payload = decode_token(token)
     if payload is None:
@@ -70,27 +66,35 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 
 
 # ============================================================
-# Favicon (чтобы не было 404)
-# ============================================================
-
-@app.get("/favicon.ico")
-def favicon():
-    if FAVICON_PATH.exists():
-        return FileResponse(FAVICON_PATH, media_type="image/svg+xml")
-    raise HTTPException(status_code=404, detail="Favicon not found")
-
-
-# ============================================================
-# Главная страница
+# Главная страница и HTML
 # ============================================================
 
 @app.get("/")
 def root():
-    return FileResponse(str(STATIC_DIR / "index.html"))
+    index = STATIC_DIR / "index.html"
+    if index.exists():
+        return FileResponse(str(index))
+    return {"message": "CineLib API работает", "docs": "/docs"}
+
+@app.get("/favicon.ico")
+def favicon():
+    fav = BASE_DIR / "favicon.svg"
+    if fav.exists():
+        return FileResponse(str(fav), media_type="image/svg+xml")
+    raise HTTPException(status_code=404)
+
+@app.get("/{page_name}")
+def serve_page(page_name: str):
+    if "." in page_name:
+        raise HTTPException(status_code=404)
+    page_path = STATIC_DIR / f"{page_name}.html"
+    if page_path.exists():
+        return FileResponse(str(page_path))
+    raise HTTPException(status_code=404, detail="Страница не найдена")
 
 
 # ============================================================
-# 1. РЕГИСТРАЦИЯ
+# API: Аутентификация
 # ============================================================
 
 @app.post("/api/auth/register", response_model=TokenResponse)
@@ -114,10 +118,6 @@ def register(data: RegisterRequest):
     return TokenResponse(access_token=token, user=user)
 
 
-# ============================================================
-# 2. ВХОД
-# ============================================================
-
 @app.post("/api/auth/login", response_model=TokenResponse)
 def login(data: LoginRequest):
     conn = get_connection()
@@ -135,18 +135,10 @@ def login(data: LoginRequest):
     return TokenResponse(access_token=token, user=user_data)
 
 
-# ============================================================
-# 3. ТЕКУЩИЙ ПОЛЬЗОВАТЕЛЬ
-# ============================================================
-
 @app.get("/api/me", response_model=UserResponse)
 def get_me(user: dict = Depends(get_current_user)):
     return UserResponse(**user)
 
-
-# ============================================================
-# 4. ОБНОВИТЬ ПРОФИЛЬ
-# ============================================================
 
 @app.put("/api/me", response_model=UserResponse)
 def update_me(data: UpdateProfileRequest, user: dict = Depends(get_current_user)):
@@ -175,7 +167,7 @@ def update_me(data: UpdateProfileRequest, user: dict = Depends(get_current_user)
 
 
 # ============================================================
-# 5. СПИСОК ФИЛЬМОВ
+# API: Фильмы
 # ============================================================
 
 @app.get("/api/movies", response_model=list[MovieResponse])
@@ -185,10 +177,6 @@ def list_movies():
     conn.close()
     return [dict(r) for r in rows]
 
-
-# ============================================================
-# 6. ОДИН ФИЛЬМ ПО ID
-# ============================================================
 
 @app.get("/api/movies/{movie_id}", response_model=MovieResponse)
 def get_movie(movie_id: str):
@@ -201,7 +189,7 @@ def get_movie(movie_id: str):
 
 
 # ============================================================
-# 7. ОТЗЫВЫ ФИЛЬМА
+# API: Отзывы
 # ============================================================
 
 @app.get("/api/movies/{movie_id}/reviews", response_model=list[ReviewResponse])
@@ -218,10 +206,6 @@ def list_reviews(movie_id: str):
     conn.close()
     return [dict(r) for r in rows]
 
-
-# ============================================================
-# 8. СОЗДАТЬ ОТЗЫВ
-# ============================================================
 
 @app.post("/api/movies/{movie_id}/reviews", response_model=ReviewResponse)
 def create_review(movie_id: str, data: CreateReviewRequest, user: dict = Depends(get_current_user)):
@@ -246,10 +230,6 @@ def create_review(movie_id: str, data: CreateReviewRequest, user: dict = Depends
     return dict(review)
 
 
-# ============================================================
-# 9. УДАЛИТЬ СВОЙ ОТЗЫВ
-# ============================================================
-
 @app.delete("/api/movies/{movie_id}/reviews/{review_id}")
 def delete_review(movie_id: str, review_id: str, user: dict = Depends(get_current_user)):
     conn = get_connection()
@@ -268,34 +248,6 @@ def delete_review(movie_id: str, review_id: str, user: dict = Depends(get_curren
     conn.close()
     return {"ok": True}
 
-# Раздаём статику (фронтенд) через FastAPI
-BASE_DIR = Path(__file__).parent
-STATIC_DIR = BASE_DIR / "static"
-
-if STATIC_DIR.exists():
-    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
-
-    # Главная страница — index.html
-    @app.get("/")
-    def root():
-        return FileResponse(str(STATIC_DIR / "index.html"))
-
-    # Любые другие HTML-страницы
-    @app.get("/{page_name}")
-    def serve_page(page_name: str):
-        # Если page_name уже содержит .html, не добавляем расширение
-        if page_name.endswith(".html"):
-            page_path = STATIC_DIR / page_name
-        else:
-            page_path = STATIC_DIR / f"{page_name}.html"
-        
-        if page_path.exists():
-            return FileResponse(str(page_path))
-        raise HTTPException(status_code=404, detail="Страница не найдена")
-
-# ============================================================
-# ЗАПУСК
-# ============================================================
 
 if __name__ == "__main__":
     import uvicorn
