@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Кинотеатры рядом — CineLib</title>
+    <link rel="stylesheet" href="/static/style.css">
+        <script src="https://api-maps.yandex.ru/2.1/?apikey=03104d3f-9434-41b7-aefe-970d456e4518&lang=ru_RU" defer></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/static/index.html" class="logo">CineLib</a>
+            <nav class="site-nav">
+                <ul>
+                    <li><a href="/static/index.html">Главная</a></li>
+                    <li><a href="/static/catalog.html">Каталог</a></li>
+                    <li class="nav-favorites"><a href="/static/favorites.html">Избранное</a></li>
+                    <li><a href="/static/map.html">Кинотеатры</a></li>
+                    <li><a href="/static/contacts.html">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="site-main">
+        <div class="container">
+            <h1>Кинотеатры рядом</h1>
+            <p class="intro">Найдите кинотеатр поблизости, чтобы посмотреть фильм на большом экране.</p>
+
+            <section class="cinemas-layout">
+                <!-- ЛЕВАЯ КОЛОНКА: КАРТА -->
+                <div class="map-side">
+                    <div id="map-loading" class="map-overlay">Ищем кинотеатры…</div>
+                    <div id="map-error" class="map-overlay" hidden>
+                        <strong>Не удалось загрузить карту</strong>
+                        <p>Проверьте подключение к интернету или попробуйте другой город.</p>
+                    </div>
+                    <div id="map"></div>
+                </div>
+
+                <aside class="sidebar">
+                    <h2>Выберите город</h2>
+                    <form id="city-form">
+                        <input id="city-input" type="text" placeholder="Ваш город" autocomplete="off">
+                        <button class="btn" type="submit">Найти кинотеатры</button>
+                    </form>
+
+                    <div id="cinema-list"></div>
+                </aside>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p class="slogan">CineLib — кино, которое остаётся с тобой</p>
+            <p>© CineLib, 2026 · Учебный проект</p>
+        </div>
+    </footer>
+
+    <script src="/static/app.js" defer></script>
+
+    <div id="auth-modal" class="auth-modal" hidden>
+        <div class="auth-modal-overlay"></div>
+        <div class="auth-modal-content">
+            <button class="auth-modal-close" aria-label="Закрыть">✕</button>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Вход</button>
+                <button class="auth-tab" data-tab="register">Регистрация</button>
+            </div>
+            
+            <!-- Форма входа -->
+            <form id="login-form" class="auth-form">
+                <h2>Вход в аккаунт</h2>
+                <div class="field">
+                    <label for="login-email">Электронная почта</label>
+                    <input type="email" id="login-email" required placeholder="name@email.com">
+                </div>
+                <div class="field">
+                    <label for="login-password">Пароль</label>
+                    <input type="password" id="login-password" required placeholder="Минимум 6 символов">
+                </div>
+                <button type="submit" class="btn">Войти</button>
+                <p class="auth-status"></p>
+            </form>
+            
+            <!-- Форма регистрации -->
+            <form id="register-form" class="auth-form" hidden>
+                <h2>Регистрация</h2>
+                <div class="field">
+                    <label for="register-name">Ник</label>
+                    <input type="text" id="register-name" required placeholder="Минимум 2 символа">
+                </div>
+                <div class="field">
+                    <label for="register-email">Электронная почта</label>
+                    <input type="email" id="register-email" required placeholder="name@email.com">
+                </div>
+                <div class="field">
+                    <label for="register-password">Пароль</label>
+                    <input type="password" id="register-password" required placeholder="Минимум 6 символов">
+                </div>
+                <button type="submit" class="btn">Зарегистрироваться</button>
+                <p class="auth-status"></p>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

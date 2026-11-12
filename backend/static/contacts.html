@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Контакты — CineLib</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/static/index.html" class="logo">CineLib</a>
+            <nav class="site-nav">
+                <ul>
+                    <li><a href="/static/index.html">Главная</a></li>
+                    <li><a href="/static/catalog.html">Каталог</a></li>
+                    <li class="nav-favorites"><a href="/static/favorites.html">Избранное</a></li>
+                    <li><a href="/static/map.html">Кинотеатры</a></li> 
+                    <li><a href="/static/contacts.html">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="site-main">
+        <div class="container">
+            <h1>Мы на связи</h1>
+            <p class="intro">Есть идея, вопрос или предложение по CineLib? Эта страница — демонстрационный макет обратной связи.</p>
+
+            <section class="contacts-layout">
+                <!-- ЛЕВАЯ КОЛОНКА: ИНФОРМАЦИЯ -->
+                <div class="contacts-info">
+                    <h2>Контакты</h2>
+                    
+                    <div class="about-block">
+                        <h3>О проекте</h3>
+                        <p>CineLib — учебный каталог фильмов и сериалов с возможностью ставить личные оценки и оставлять мини-отзывы.</p>
+                    </div>
+
+                    <div class="about-block">
+                        <h3>Электронная почта</h3>
+                        <p><a href="mailto:hello@cinelib.example">hello@cinelib.example</a></p>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">Контактные данные условные и приведены только для макета.</p>
+                    </div>
+                </div>
+
+                <!-- ПРАВАЯ КОЛОНКА: ФОРМА ОБРАТНОЙ СВЯЗИ -->
+                <aside class="contact-sidebar">
+                    <div class="contact-form">
+                        <h2>Обратная связь</h2>
+                        <form id="contact-form">
+                            <div class="field">
+                                <label for="contact-email">Электронная почта</label>
+                                <input type="email" id="contact-email" placeholder="name@email.com">
+                            </div>
+                            <div class="field">
+                                <label for="contact-message">Сообщение</label>
+                                <textarea id="contact-message" maxlength="500" required placeholder="Напиши своё сообщение, до 500 символов"></textarea>
+                            </div>
+                            <button class="btn" type="submit">Отправить (демо)</button>
+                            <p id="contact-status"></p>
+                        </form>
+                    </div>
+                </aside>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p class="slogan">CineLib — кино, которое остаётся с тобой</p>
+            <p>© CineLib, 2026 · Учебный проект</p>
+        </div>
+    </footer>
+
+    <script src="/static/app.js" defer></script>
+
+    <div id="auth-modal" class="auth-modal" hidden>
+        <div class="auth-modal-overlay"></div>
+        <div class="auth-modal-content">
+            <button class="auth-modal-close" aria-label="Закрыть">✕</button>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Вход</button>
+                <button class="auth-tab" data-tab="register">Регистрация</button>
+            </div>
+            
+            <!-- Форма входа -->
+            <form id="login-form" class="auth-form">
+                <h2>Вход в аккаунт</h2>
+                <div class="field">
+                    <label for="login-email">Электронная почта</label>
+                    <input type="email" id="login-email" required placeholder="name@email.com">
+                </div>
+                <div class="field">
+                    <label for="login-password">Пароль</label>
+                    <input type="password" id="login-password" required placeholder="Минимум 6 символов">
+                </div>
+                <button type="submit" class="btn">Войти</button>
+                <p class="auth-status"></p>
+            </form>
+            
+            <!-- Форма регистрации -->
+            <form id="register-form" class="auth-form" hidden>
+                <h2>Регистрация</h2>
+                <div class="field">
+                    <label for="register-name">Ник</label>
+                    <input type="text" id="register-name" required placeholder="Минимум 2 символа">
+                </div>
+                <div class="field">
+                    <label for="register-email">Электронная почта</label>
+                    <input type="email" id="register-email" required placeholder="name@email.com">
+                </div>
+                <div class="field">
+                    <label for="register-password">Пароль</label>
+                    <input type="password" id="register-password" required placeholder="Минимум 6 символов">
+                </div>
+                <button type="submit" class="btn">Зарегистрироваться</button>
+                <p class="auth-status"></p>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

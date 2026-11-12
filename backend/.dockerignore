@@ -1,0 +1,7 @@
+__pycache__
+*.pyc
+.env
+cinelib.db
+cinelib.db-shm
+cinelib.db-wal
+.venv
