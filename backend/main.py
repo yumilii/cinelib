@@ -16,7 +16,7 @@ from fastapi.responses import FileResponse
 
 load_dotenv()
 
-from database import get_connection
+from database import get_connection, init_db
 from auth import hash_password, verify_password, create_access_token, decode_token
 from models import (
     RegisterRequest, LoginRequest, TokenResponse,
@@ -43,6 +43,33 @@ BASE_DIR = Path(__file__).parent
 STATIC_DIR = BASE_DIR / "static"
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+
+# ============================================================
+# АВТОНАПОЛНЕНИЕ БАЗЫ ДАННЫХ (вместо Shell)
+# ============================================================
+
+def auto_seed():
+    """Если таблица movies пустая — наполняем её тестовыми данными."""
+    conn = get_connection()
+    count = conn.execute("SELECT COUNT(*) FROM movies").fetchone()[0]
+    if count > 0:
+        conn.close()
+        return
+    print("🌱 База пустая — запускаем автонаполнение...")
+    conn.close()
+    
+    # Импортируем и запускаем seed
+    from seed import seed_movies
+    seed_movies()
+    print("✅ Автонаполнение завершено")
+
+
+# Вызываем при старте приложения
+@app.on_event("startup")
+def on_startup():
+    init_db()
+    auto_seed()
 
 
 # ============================================================

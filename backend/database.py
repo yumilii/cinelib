@@ -1,31 +1,26 @@
 """
 Подключение к SQLite и создание таблиц.
-SQLite — встроенная БД, не требует установки.
-Файл cinelib.db создастся автоматически при первом запуске.
 """
 
 import sqlite3
 from pathlib import Path
 
-# Путь к файлу базы данных (в той же папке, что и этот скрипт)
 DB_PATH = Path(__file__).parent / "cinelib.db"
 
 
 def get_connection() -> sqlite3.Connection:
-    """Возвращает новое соединение с БД."""
     conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row  # чтобы получать строки как словари
-    conn.execute("PRAGMA journal_mode=WAL")  # ускоряет запись
-    conn.execute("PRAGMA foreign_keys=ON")   # включаем внешние ключи
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA foreign_keys=ON")
     return conn
 
 
 def init_db():
-    """Создаёт таблицы, если их ещё нет. Вызывается один раз при старте сервера."""
+    """Создаёт таблицы, если их ещё нет."""
     conn = get_connection()
     cursor = conn.cursor()
 
-    # Таблица пользователей
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,7 +31,6 @@ def init_db():
         )
     """)
 
-    # Таблица фильмов
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS movies (
             id              TEXT PRIMARY KEY,
@@ -56,7 +50,6 @@ def init_db():
         )
     """)
 
-    # Таблица отзывов (связывает пользователя и фильм)
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS reviews (
             id          TEXT PRIMARY KEY,
@@ -72,8 +65,8 @@ def init_db():
 
     conn.commit()
     conn.close()
-    print(f"✅ База данных готова: {DB_PATH}")
 
 
-# Запускаем создание таблиц при импорте
-init_db()
+if __name__ == "__main__":
+    init_db()
+    print("✅ База данных готова")

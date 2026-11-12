@@ -1,14 +1,9 @@
 """
-Скрипт наполняет таблицу movies данными.
-Запуск: python seed.py
+Наполнение базы данных тестовыми фильмами.
+Вызывается автоматически при первом запуске сервера.
 """
 
-import json
-from pathlib import Path
 from database import get_connection
-
-# Путь к твоему films.json (адаптируй под свою структуру)
-JSON_PATH = Path(__file__).parent.parent / "films.json"
 
 MOVIES = [
     {
@@ -19,7 +14,7 @@ MOVIES = [
         "cast": "Остин Абрамс, Зак Черри, Кали Рейс",
         "description": "Медицинский курьер оказывается в эпицентре кошмара...",
         "short_desc": "Одна ночь превращается в отчаянную борьбу за выживание.",
-        "poster": "images/resident-evil.svg", "theme": "horror"
+        "poster": "/static/images/resident-evil.svg", "theme": "horror"
     },
     {
         "id": "obsession", "title": "Обсессия", "original": "Obsession",
@@ -29,7 +24,7 @@ MOVIES = [
         "cast": "Майкл Джонстон, Инде Наварретт",
         "description": "Желание завоевать сердце любимой становится началом пугающей истории.",
         "short_desc": "У исполнения мечты есть страшная цена.",
-        "poster": "images/obsession.svg", "theme": "red"
+        "poster": "/static/images/obsession.svg", "theme": "red"
     },
     {
         "id": "backrooms", "title": "Бекрумс", "original": "Backrooms",
@@ -39,7 +34,7 @@ MOVIES = [
         "cast": "Лукита Максвелл, Финн Беннетт",
         "description": "В подвале мебельного магазина появляется странный проход...",
         "short_desc": "Пространство, которое не подчиняется законам реальности.",
-        "poster": "images/backrooms.svg", "theme": "liminal"
+        "poster": "/static/images/backrooms.svg", "theme": "liminal"
     },
     {
         "id": "exit-8", "title": "Выход 8", "original": "Exit 8",
@@ -49,7 +44,7 @@ MOVIES = [
         "cast": "Кадзунари Ниномия, Ямато Коти",
         "description": "Мужчина оказывается в бесконечном переходе метро...",
         "short_desc": "Чтобы найти выход, нужно замечать малейшие отклонения.",
-        "poster": "images/exit-8.svg", "theme": "liminal"
+        "poster": "/static/images/exit-8.svg", "theme": "liminal"
     },
     {
         "id": "spider-man", "title": "Человек-паук: Новый день",
@@ -61,7 +56,7 @@ MOVIES = [
         "cast": "Том Холланд, Зендея, Джейкоб Баталон",
         "description": "Питер Паркер продолжает защищать город...",
         "short_desc": "Новая угроза заставляет героя измениться.",
-        "poster": "images/spider-man.svg", "theme": "blue"
+        "poster": "/static/images/spider-man.svg", "theme": "blue"
     },
     {
         "id": "odyssey", "title": "Одиссея", "original": "The Odyssey",
@@ -72,7 +67,7 @@ MOVIES = [
         "cast": "Мэтт Дэймон, Том Холланд, Энн Хэтэуэй",
         "description": "Экранизация эпоса Гомера...",
         "short_desc": "Путешествие домой после Троянской войны.",
-        "poster": "images/odyssey.svg", "theme": "gold"
+        "poster": "/static/images/odyssey.svg", "theme": "gold"
     },
     {
         "id": "michael", "title": "Майкл", "original": "Michael",
@@ -83,7 +78,7 @@ MOVIES = [
         "cast": "Джаафар Джексон, Ниа Лонг",
         "description": "Биографическая драма о Майкле Джексоне...",
         "short_desc": "От первых выступлений до мировой славы.",
-        "poster": "images/michael.svg", "theme": "gold"
+        "poster": "/static/images/michael.svg", "theme": "gold"
     },
     {
         "id": "the-drama", "title": "Драма", "original": "The Drama",
@@ -94,7 +89,7 @@ MOVIES = [
         "cast": "Зендея, Роберт Паттинсон",
         "description": "Подготовка к свадьбе превращается в эмоциональное испытание...",
         "short_desc": "Влюблённым предстоит заново взглянуть друг на друга.",
-        "poster": "images/the-drama.svg", "theme": "pink"
+        "poster": "/static/images/the-drama.svg", "theme": "pink"
     },
     {
         "id": "little-women", "title": "Маленькие женщины",
@@ -106,7 +101,7 @@ MOVIES = [
         "cast": "Сирша Ронан, Эмма Уотсон, Флоренс Пью",
         "description": "История сестёр Марч в XIX веке...",
         "short_desc": "Четыре сестры ищут собственное место в мире.",
-        "poster": "images/little-women.svg", "theme": "cream"
+        "poster": "/static/images/little-women.svg", "theme": "cream"
     },
     {
         "id": "wuthering-heights", "title": "Грозовой перевал",
@@ -118,7 +113,7 @@ MOVIES = [
         "cast": "Марго Робби, Джейкоб Элорди",
         "description": "Страстная история Кэтрин и Хитклиффа...",
         "short_desc": "Чувства сталкиваются с гордостью и жаждой мести.",
-        "poster": "images/wuthering-heights.svg", "theme": "storm"
+        "poster": "/static/images/wuthering-heights.svg", "theme": "storm"
     },
     {
         "id": "beautiful-mind", "title": "Игры разума",
@@ -130,7 +125,7 @@ MOVIES = [
         "cast": "Рассел Кроу, Дженнифер Коннелли",
         "description": "Талантливый математик Джон Нэш...",
         "short_desc": "Борьба за карьеру, отношения и восприятие реальности.",
-        "poster": "images/beautiful-mind.svg", "theme": "blue"
+        "poster": "/static/images/beautiful-mind.svg", "theme": "blue"
     },
     {
         "id": "mickey-17", "title": "Микки 17", "original": "Mickey 17",
@@ -141,7 +136,7 @@ MOVIES = [
         "cast": "Роберт Паттинсон, Наоми Аки",
         "description": "Микки участвует в космической экспедиции...",
         "short_desc": "Сотрудника можно восстановить после смерти.",
-        "poster": "images/mickey-17.svg", "theme": "orange"
+        "poster": "/static/images/mickey-17.svg", "theme": "orange"
     },
     {
         "id": "now-you-see-me-3", "title": "Иллюзия обмана 3",
@@ -151,9 +146,9 @@ MOVIES = [
         "runtime": "113 мин.", "global_rating": 6.2,
         "status": "Вышел в 2025 году",
         "cast": "Джесси Айзенберг, Вуди Харрельсон",
-        "description": "Четыре всадника возвращаются...",
+        "description": "Четыре всадники возвращаются...",
         "short_desc": "Раскрыть масштабную аферу.",
-        "poster": "images/now-you-see-me-3.svg", "theme": "purple"
+        "poster": "/static/images/now-you-see-me-3.svg", "theme": "purple"
     },
     {
         "id": "inception", "title": "Начало", "original": "Inception",
@@ -162,9 +157,9 @@ MOVIES = [
         "runtime": "148 мин.", "global_rating": 8.8,
         "status": "Классика кино",
         "cast": "Леонардо ДиКаприо, Джозеф Гордон-Левитт",
-        "description": "Вор, крадущий секреты из снов, получает шанс искупить вину...",
+        "description": "Вор, крадущий секреты из снов...",
         "short_desc": "Сон внутри сна внутри сна.",
-        "poster": "images/inception.svg", "theme": "blue"
+        "poster": "/static/images/inception.svg", "theme": "blue"
     },
     {
         "id": "interstellar", "title": "Интерстеллар", "original": "Interstellar",
@@ -173,14 +168,15 @@ MOVIES = [
         "runtime": "169 мин.", "global_rating": 8.7,
         "status": "Классика кино",
         "cast": "Мэттью Макконахи, Энн Хэтэуэй",
-        "description": "Группа исследователей отправляется через червоточину в поисках нового дома...",
+        "description": "Группа исследователей отправляется через червоточину...",
         "short_desc": "Любовь transcends время и пространство.",
-        "poster": "images/interstellar.svg", "theme": "gold"
+        "poster": "/static/images/interstellar.svg", "theme": "gold"
     },
 ]
 
 
-def seed():
+def seed_movies():
+    """Наполняет таблицу movies данными. Вызывается автоматически."""
     conn = get_connection()
     cursor = conn.cursor()
     
@@ -198,12 +194,12 @@ def seed():
             )
             inserted += 1
         except Exception as e:
-            print(f"Пропущен {m['id']}: {e}")
+            print(f"⚠️  Пропущен {m['id']}: {e}")
     
     conn.commit()
     conn.close()
-    print(f"Добавлено фильмов: {inserted}")
+    print(f"✅ Добавлено фильмов: {inserted}")
 
 
 if __name__ == "__main__":
-    seed()
+    seed_movies()
