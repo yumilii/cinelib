@@ -150,28 +150,6 @@ MOVIES = [
         "short_desc": "Раскрыть масштабную аферу.",
         "poster": "/static/images/now-you-see-me-3.svg", "theme": "purple"
     },
-    {
-        "id": "inception", "title": "Начало", "original": "Inception",
-        "year": 2010, "genre": "Фантастика · Триллер",
-        "director": "Кристофер Нолан",
-        "runtime": "148 мин.", "global_rating": 8.8,
-        "status": "Классика кино",
-        "cast": "Леонардо ДиКаприо, Джозеф Гордон-Левитт",
-        "description": "Вор, крадущий секреты из снов...",
-        "short_desc": "Сон внутри сна внутри сна.",
-        "poster": "/static/images/inception.svg", "theme": "blue"
-    },
-    {
-        "id": "interstellar", "title": "Интерстеллар", "original": "Interstellar",
-        "year": 2014, "genre": "Фантастика · Драма",
-        "director": "Кристофер Нолан",
-        "runtime": "169 мин.", "global_rating": 8.7,
-        "status": "Классика кино",
-        "cast": "Мэттью Макконахи, Энн Хэтэуэй",
-        "description": "Группа исследователей отправляется через червоточину...",
-        "short_desc": "Любовь transcends время и пространство.",
-        "poster": "/static/images/interstellar.svg", "theme": "gold"
-    },
 ]
 
 
