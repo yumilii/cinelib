@@ -95,13 +95,18 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 # ============================================================
 # Главная страница и HTML
 # ============================================================
+BASE_DIR = Path(__file__).parent
+STATIC_DIR = BASE_DIR / "static"
+
+if STATIC_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 @app.get("/")
 def root():
     index = STATIC_DIR / "index.html"
     if index.exists():
         return FileResponse(str(index))
-    return {"message": "CineLib API работает", "docs": "/docs"}
+    return {"message": "CineLib API", "docs": "/docs"}
 
 @app.get("/favicon.ico")
 def favicon():
